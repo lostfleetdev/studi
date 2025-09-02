@@ -1,0 +1,25 @@
+{
+  "name": "student-performance-system",
+  "version": "1.0.0",
+  "description": "Intelligent Student Performance Prediction and Learning Management System",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:css && npm run build:config",
+    "build:css": "npx tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
+    "build:config": "node scripts/generateConfig.js",
+    "dev": "npm run build:css & npm run build:config",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  },
+  "keywords": [
+    "education",
+    "learning-management",
+    "machine-learning",
+    "flask",
+    "tailwindcss"
+  ],
+  "author": "",
+  "license": "ISC"
+}

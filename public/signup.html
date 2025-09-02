@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Student Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Already have an account?
+                <a href="login.html" class="font-medium text-primary-600 hover:text-primary-500">
+                    Sign in here
+                </a>
+            </p>
+        </div>
+        
+        <div id="alert" class="hidden alert alert-error"></div>
+        
+        <form id="signupForm" class="mt-8 space-y-6">
+            <div class="rounded-md shadow-sm space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input id="first_name" name="first_name" type="text" required 
+                               class="mt-1 form-input" 
+                               placeholder="First Name">
+                        <div id="first_nameError" class="text-red-600 text-sm mt-1 hidden"></div>
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input id="last_name" name="last_name" type="text" required 
+                               class="mt-1 form-input" 
+                               placeholder="Last Name">
+                        <div id="last_nameError" class="text-red-600 text-sm mt-1 hidden"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required 
+                           class="mt-1 form-input" 
+                           placeholder="Email address">
+                    <div id="emailError" class="text-red-600 text-sm mt-1 hidden"></div>
+                </div>
+                
+                <div>
+                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <select id="role" name="role" required 
+                            class="mt-1 form-select">
+                        <option value="">Select your role</option>
+                        <option value="student">Student</option>
+                        <option value="teacher">Teacher</option>
+                    </select>
+                    <div id="roleError" class="text-red-600 text-sm mt-1 hidden"></div>
+                </div>
+                
+                <div id="rollNumberContainer" class="hidden">
+                    <label for="roll_number" class="block text-sm font-medium text-gray-700">Roll Number</label>
+                    <input id="roll_number" name="roll_number" type="text" 
+                           class="mt-1 form-input" 
+                           placeholder="Enter your roll number">
+                    <div id="roll_numberError" class="text-red-600 text-sm mt-1 hidden"></div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="new-password" required 
+                           class="mt-1 form-input" 
+                           placeholder="Password">
+                    <div id="passwordError" class="text-red-600 text-sm mt-1 hidden"></div>
+                    <p class="mt-1 text-sm text-gray-500">Password must be at least 8 characters long</p>
+                </div>
+                
+                <div>
+                    <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" required 
+                           class="mt-1 form-input" 
+                           placeholder="Confirm password">
+                    <div id="confirm_passwordError" class="text-red-600 text-sm mt-1 hidden"></div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" id="signupBtn" 
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="signupBtnText">Create Account</span>
+                    <span id="signupSpinner" class="hidden">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Creating account...
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('signupForm');
+            const alert = document.getElementById('alert');
+            const signupBtn = document.getElementById('signupBtn');
+            const signupBtnText = document.getElementById('signupBtnText');
+            const signupSpinner = document.getElementById('signupSpinner');
+            const roleSelect = document.getElementById('role');
+            const rollNumberContainer = document.getElementById('rollNumberContainer');
+            const rollNumberInput = document.getElementById('roll_number');
+
+            // Clear any existing auth data
+            localStorage.removeItem('user');
+            
+            // Show/hide roll number field based on role selection
+            roleSelect.addEventListener('change', function() {
+                if (this.value === 'student') {
+                    rollNumberContainer.classList.remove('hidden');
+                    rollNumberInput.required = true;
+                } else {
+                    rollNumberContainer.classList.add('hidden');
+                    rollNumberInput.required = false;
+                    rollNumberInput.value = '';
+                    clearFieldError('roll_number');
+                }
+            });
+            
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Clear previous errors
+                clearErrors();
+                hideAlert();
+                
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Show loading state
+                setLoading(true);
+                
+                const formData = new FormData(form);
+                const data = {
+                    first_name: formData.get('first_name'),
+                    last_name: formData.get('last_name'),
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    confirm_password: formData.get('confirm_password'),
+                    role: formData.get('role'),
+                    roll_number: formData.get('roll_number')
+                };
+                
+                try {
+                    const response = await fetch(`${window.CONFIG.FRONTEND_API_URL}/auth/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        // Store user data
+                        localStorage.setItem('user', JSON.stringify(result.user));
+                        
+                        // Show success message and redirect
+                        showAlert('Account created successfully! Redirecting...', 'success');
+                        
+                        setTimeout(() => {
+                            // Redirect based on role
+                            if (result.user.role === 'student') {
+                                window.location.href = 'dashboard_student.html';
+                            } else {
+                                window.location.href = 'dashboard_teacher.html';
+                            }
+                        }, 1500);
+                    } else {
+                        showAlert(result.error || 'Registration failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    showAlert('Network error. Please try again.', 'error');
+                } finally {
+                    setLoading(false);
+                }
+            });
+            
+            function validateForm() {
+                let isValid = true;
+                
+                const firstName = document.getElementById('first_name').value.trim();
+                const lastName = document.getElementById('last_name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                const role = document.getElementById('role').value;
+                const rollNumber = document.getElementById('roll_number').value.trim();
+                
+                // First name validation
+                if (!firstName) {
+                    showFieldError('first_name', 'First name is required');
+                    isValid = false;
+                } else if (firstName.length < 2) {
+                    showFieldError('first_name', 'First name must be at least 2 characters');
+                    isValid = false;
+                }
+                
+                // Last name validation
+                if (!lastName) {
+                    showFieldError('last_name', 'Last name is required');
+                    isValid = false;
+                } else if (lastName.length < 2) {
+                    showFieldError('last_name', 'Last name must be at least 2 characters');
+                    isValid = false;
+                }
+                
+                // Email validation
+                if (!email) {
+                    showFieldError('email', 'Email is required');
+                    isValid = false;
+                } else if (!isValidEmail(email)) {
+                    showFieldError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+                
+                // Role validation
+                if (!role) {
+                    showFieldError('role', 'Please select your role');
+                    isValid = false;
+                }
+                
+                // Roll number validation for students
+                if (role === 'student' && !rollNumber) {
+                    showFieldError('roll_number', 'Roll number is required for students');
+                    isValid = false;
+                } else if (role === 'student' && rollNumber.length < 3) {
+                    showFieldError('roll_number', 'Roll number must be at least 3 characters');
+                    isValid = false;
+                }
+                
+                // Password validation
+                if (!password) {
+                    showFieldError('password', 'Password is required');
+                    isValid = false;
+                } else if (password.length < 8) {
+                    showFieldError('password', 'Password must be at least 8 characters long');
+                    isValid = false;
+                }
+                
+                // Confirm password validation
+                if (!confirmPassword) {
+                    showFieldError('confirm_password', 'Please confirm your password');
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    showFieldError('confirm_password', 'Passwords do not match');
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            function showFieldError(fieldName, message) {
+                const errorDiv = document.getElementById(fieldName + 'Error');
+                const field = document.getElementById(fieldName);
+                
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+                field.classList.add('border-red-500');
+            }
+            
+            function clearFieldError(fieldName) {
+                const errorDiv = document.getElementById(fieldName + 'Error');
+                const field = document.getElementById(fieldName);
+                
+                errorDiv.classList.add('hidden');
+                errorDiv.textContent = '';
+                field.classList.remove('border-red-500');
+            }
+            
+            function clearErrors() {
+                const errorDivs = document.querySelectorAll('[id$="Error"]');
+                errorDivs.forEach(div => {
+                    div.classList.add('hidden');
+                    div.textContent = '';
+                });
+                
+                const fields = document.querySelectorAll('input, select');
+                fields.forEach(field => {
+                    field.classList.remove('border-red-500');
+                });
+            }
+            
+            function showAlert(message, type) {
+                alert.textContent = message;
+                alert.className = `alert alert-${type}`;
+                alert.classList.remove('hidden');
+            }
+            
+            function hideAlert() {
+                alert.classList.add('hidden');
+            }
+            
+            function setLoading(loading) {
+                signupBtn.disabled = loading;
+                if (loading) {
+                    signupBtnText.classList.add('hidden');
+                    signupSpinner.classList.remove('hidden');
+                } else {
+                    signupBtnText.classList.remove('hidden');
+                    signupSpinner.classList.add('hidden');
+                }
+            }
+            
+            function isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+        });
+    </script>
+</body>
+</html>
