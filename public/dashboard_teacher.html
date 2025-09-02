@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - SMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/output.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-semibold text-gray-900">Teacher Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userName" class="text-gray-700"></span>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Welcome Section -->
+        <div class="px-4 py-6 sm:px-0">
+            <div class="mb-6">
+                <h2 id="welcomeMessage" class="text-2xl font-bold text-gray-900 mb-2"></h2>
+                <p class="text-gray-600">Manage your courses and track student progress</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Courses</p>
+                            <p id="totalCourses" class="text-2xl font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Students</p>
+                            <p id="totalStudents" class="text-2xl font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Assignments</p>
+                            <p id="totalAssignments" class="text-2xl font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Submissions</p>
+                            <p id="totalSubmissions" class="text-2xl font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Graded</p>
+                            <p id="gradedSubmissions" class="text-2xl font-semibold text-gray-900">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mb-8">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
+                <div class="flex flex-wrap gap-4">
+                    <button id="createCourseBtn" class="btn btn-primary">Create Course</button>
+                    <button id="createAssignmentBtn" class="btn btn-secondary">Create Assignment</button>
+                    <button id="trainModelBtn" class="btn btn-secondary">Train ML Model</button>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Courses -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">My Courses</h3>
+                    </div>
+                    <div id="teacherCourses">
+                        <!-- Loading placeholder -->
+                    </div>
+                </div>
+
+                <!-- Recent Assignments -->
+                <div class="card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">Recent Assignments</h3>
+                    </div>
+                    <div id="recentAssignments">
+                        <!-- Loading placeholder -->
+                    </div>
+                </div>
+
+                <!-- Submission Statistics -->
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Submission Statistics</h3>
+                    <div class="relative h-64">
+                        <canvas id="submissionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Grade Distribution -->
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Grade Distribution</h3>
+                    <div class="relative h-64">
+                        <canvas id="gradeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Course Modal -->
+    <div id="createCourseModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                <div class="px-6 py-4 border-b">
+                    <h3 class="text-lg font-medium text-gray-900">Create New Course</h3>
+                </div>
+                <form id="createCourseForm" class="px-6 py-4 space-y-4">
+                    <div>
+                        <label for="courseName" class="block text-sm font-medium text-gray-700">Course Name</label>
+                        <input type="text" id="courseName" name="name" required class="mt-1 form-input">
+                    </div>
+                    <div>
+                        <label for="courseCode" class="block text-sm font-medium text-gray-700">Course Code</label>
+                        <input type="text" id="courseCode" name="code" required class="mt-1 form-input">
+                    </div>
+                    <div>
+                        <label for="courseDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="courseDescription" name="description" rows="3" class="mt-1 form-input"></textarea>
+                    </div>
+                    <div>
+                        <label for="courseCredits" class="block text-sm font-medium text-gray-700">Credits</label>
+                        <input type="number" id="courseCredits" name="credits" min="1" max="6" value="3" class="mt-1 form-input">
+                    </div>
+                </form>
+                <div class="px-6 py-4 border-t flex justify-end space-x-3">
+                    <button id="cancelCreateCourse" class="btn btn-secondary">Cancel</button>
+                    <button id="submitCreateCourse" class="btn btn-primary">Create Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!authManager.requireAuth('teacher')) {
+                return;
+            }
+
+            const user = authManager.getCurrentUser();
+            
+            // Set user info
+            document.getElementById('userName').textContent = `${user.first_name} ${user.last_name}`;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${user.first_name}!`;
+
+            // Set up logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                authManager.logout();
+            });
+
+            // Set up quick actions
+            setupQuickActions();
+
+            // Load dashboard data
+            await loadDashboardData();
+        });
+
+        function setupQuickActions() {
+            const createCourseBtn = document.getElementById('createCourseBtn');
+            const createCourseModal = document.getElementById('createCourseModal');
+            const cancelCreateCourse = document.getElementById('cancelCreateCourse');
+            const submitCreateCourse = document.getElementById('submitCreateCourse');
+            const createCourseForm = document.getElementById('createCourseForm');
+
+            // Create Course Modal
+            createCourseBtn.addEventListener('click', () => {
+                createCourseModal.classList.remove('hidden');
+            });
+
+            cancelCreateCourse.addEventListener('click', () => {
+                createCourseModal.classList.add('hidden');
+                createCourseForm.reset();
+            });
+
+            submitCreateCourse.addEventListener('click', async () => {
+                const formData = new FormData(createCourseForm);
+                const data = {
+                    name: formData.get('name'),
+                    code: formData.get('code'),
+                    description: formData.get('description'),
+                    credits: parseInt(formData.get('credits'))
+                };
+
+                try {
+                    await apiClient.post('/courses', data);
+                    createCourseModal.classList.add('hidden');
+                    createCourseForm.reset();
+                    await loadDashboardData(); // Refresh data
+                } catch (error) {
+                    alert('Failed to create course: ' + error.message);
+                }
+            });
+
+            // Train Model
+            document.getElementById('trainModelBtn').addEventListener('click', async () => {
+                if (confirm('This will train the ML model using current student data. Continue?')) {
+                    try {
+                        await apiClient.post('/ml/train', {});
+                        alert('Model training completed successfully!');
+                    } catch (error) {
+                        alert('Failed to train model: ' + error.message);
+                    }
+                }
+            });
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Show loading states
+                utils.showLoading(document.getElementById('teacherCourses'));
+                utils.showLoading(document.getElementById('recentAssignments'));
+
+                // Load dashboard data
+                const dashboardData = await apiClient.get('/dashboard/teacher');
+                
+                // Update stats
+                updateStats(dashboardData.stats);
+                
+                // Load courses
+                renderTeacherCourses(dashboardData.courses);
+                
+                // Load assignments
+                renderRecentAssignments(dashboardData.assignments);
+                
+                // Load charts
+                renderSubmissionChart(dashboardData.assignments);
+                renderGradeChart();
+
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+                utils.showError(document.getElementById('teacherCourses'), 'Failed to load courses');
+                utils.showError(document.getElementById('recentAssignments'), 'Failed to load assignments');
+            }
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalCourses').textContent = stats.total_courses;
+            document.getElementById('totalStudents').textContent = stats.total_students;
+            document.getElementById('totalAssignments').textContent = stats.total_assignments;
+            document.getElementById('totalSubmissions').textContent = stats.total_submissions;
+            document.getElementById('gradedSubmissions').textContent = stats.graded_submissions;
+        }
+
+        function renderTeacherCourses(courses) {
+            const container = document.getElementById('teacherCourses');
+            
+            if (!courses || courses.length === 0) {
+                utils.showEmpty(container, 'No courses created yet');
+                return;
+            }
+
+            container.innerHTML = courses.map(course => `
+                <div class="border-b border-gray-200 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-gray-900">${course.name}</h4>
+                            <p class="text-sm text-gray-600">${course.code}</p>
+                            <p class="text-sm text-gray-500">${course.description || 'No description'}</p>
+                        </div>
+                        <span class="text-sm font-medium text-gray-600">
+                            ${course.credits} credits
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecentAssignments(assignments) {
+            const container = document.getElementById('recentAssignments');
+            
+            if (!assignments || assignments.length === 0) {
+                utils.showEmpty(container, 'No assignments created yet');
+                return;
+            }
+
+            // Show only the 5 most recent assignments
+            const recentAssignments = assignments.slice(0, 5);
+
+            container.innerHTML = recentAssignments.map(assignment => `
+                <div class="border-b border-gray-200 pb-4 mb-4 last:border-b-0 last:pb-0 last:mb-0">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-medium text-gray-900">${assignment.title}</h4>
+                            <p class="text-sm text-gray-600">${assignment.course_name}</p>
+                            <p class="text-sm text-gray-500">Due: ${utils.formatDate(assignment.due_date)}</p>
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">
+                            ${assignment.max_score} pts
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSubmissionChart(assignments) {
+            const ctx = document.getElementById('submissionChart').getContext('2d');
+            
+            if (!assignments || assignments.length === 0) {
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('No assignment data available', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+
+            // For demo purposes, create sample submission data
+            const labels = assignments.slice(0, 6).map(a => a.title.substring(0, 10) + '...');
+            const submissionData = assignments.slice(0, 6).map(() => Math.floor(Math.random() * 30) + 10);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Submissions',
+                        data: submissionData,
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderGradeChart() {
+            const ctx = document.getElementById('gradeChart').getContext('2d');
+            
+            // Sample grade distribution data
+            const gradeData = {
+                labels: ['A', 'B', 'C', 'D', 'F'],
+                datasets: [{
+                    data: [25, 35, 20, 15, 5],
+                    backgroundColor: [
+                        '#10B981',
+                        '#3B82F6',
+                        '#F59E0B',
+                        '#EF4444',
+                        '#6B7280'
+                    ]
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: gradeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
